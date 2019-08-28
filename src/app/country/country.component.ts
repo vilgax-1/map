@@ -83,7 +83,8 @@ export class CountryComponent implements AfterViewInit {
       ];
     } else if (this.country === 'UE') {
       polygonSeries.include = [ 'DE', 'AT', 'BE', 'GB', 'CY', 'HR', 'DK', 'SK',
-        'SI', 'ES', 'EE', 'FI', 'FR'
+        'SI', 'ES', 'EE', 'FI', 'FR', 'LV', 'LU', 'GR', 'HU', 'IE', 'IT', 'LT',
+        'MT', 'NL', 'PL', 'PT', 'CZ', 'RO', 'SE'
       ];
     }
 
