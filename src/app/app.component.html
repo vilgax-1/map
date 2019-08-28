@@ -1,2 +1,8 @@
-<app-country [country]="'MX'" ></app-country>
+<button (click)="value = 'MX'">Mexico</button>
+<button (click)="value = 'UK' ">Ukrania</button>
+<button (click)="value = 'US' ">Estados Unidos</button>
+
+<app-country [country]="value"></app-country>
+
+
 <router-outlet></router-outlet>

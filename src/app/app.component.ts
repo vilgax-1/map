@@ -8,5 +8,5 @@ import { Component, NgZone, ViewChild, ElementRef, Input} from '@angular/core';
 })
 export class AppComponent {
   constructor() {}
-
+  value = 'US';
 }

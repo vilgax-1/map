@@ -1,4 +1,4 @@
-import { Component, OnInit,AfterViewInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, OnInit,AfterViewInit, ViewChild, ElementRef, Input,SimpleChanges } from '@angular/core';
 import * as am4maps from '@amcharts/amcharts4/maps';
 import * as am4core from '@amcharts/amcharts4/core';
 import useGeodata from '@amcharts/amcharts4-geodata/mexicoHigh';
@@ -17,11 +17,13 @@ export class CountryComponent implements AfterViewInit {
   @ViewChild('chartElement', { static: true }) chartElement: ElementRef<any>;
   @Input() country: string;
 
-  constructor() {
+  state: any = {};
 
+  constructor() {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.ngAfterViewInit();
   }
-
   getCountry(state) {
     const select = {
       'MX': useGeodata,
@@ -32,7 +34,12 @@ export class CountryComponent implements AfterViewInit {
     return select[state];
   }
 
+  getState(data) {
+    this.state = data;
+  }
+
   ngAfterViewInit() {
+    this.state = '';
     am4core.useTheme(am4themes_animated);
 
     const chart = am4core.create(this.chartElement.nativeElement, am4maps.MapChart);
@@ -60,9 +67,13 @@ export class CountryComponent implements AfterViewInit {
     polygonTemplate.nonScalingStroke = true;
     polygonTemplate.strokeWidth = 0.5;
     polygonTemplate.tooltipText = '{name}';
+    polygonTemplate.fill = chart.colors.getIndex(0);
+
     // Create hover state and set alternative fill color
     const hs = polygonTemplate.states.create('hover');
-    hs.properties.fill = am4core.color('#3c5bdc');
+    hs.properties.fill = am4core.color('#bebebe');
+
+
 
     // Create is active
 
@@ -70,8 +81,7 @@ export class CountryComponent implements AfterViewInit {
     activeState.properties.fill = chart.colors.getIndex(4);
 
     let lastSelected;
-
-    polygonTemplate.events.on('hit', function(ev) {
+    polygonTemplate.events.on('hit', (ev) => {
 
       if (lastSelected) {
         lastSelected.isActive = false;
@@ -80,7 +90,7 @@ export class CountryComponent implements AfterViewInit {
         ev.target.isActive = !ev.target.isActive;
         lastSelected = ev.target;
       }
-      console.log(chart);
+      this.getState(ev.target.dataItem.dataContext);
     });
 
 
