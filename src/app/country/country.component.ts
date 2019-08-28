@@ -3,9 +3,9 @@ import * as am4maps from '@amcharts/amcharts4/maps';
 import * as am4core from '@amcharts/amcharts4/core';
 import useGeodata from '@amcharts/amcharts4-geodata/mexicoHigh';
 import usaAlbersLow from '@amcharts/amcharts4-geodata/usaAlbersLow';
-import ukraineLow from '@amcharts/amcharts4-geodata/ukraineLow';
 import continentsRussiaEuropeLow from '@amcharts/amcharts4-geodata/continentsRussiaEuropeLow';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import am4geodata_worldLow from "@amcharts/amcharts4-geodata/worldLow";
 
 @Component({
   selector: 'app-country',
@@ -28,8 +28,8 @@ export class CountryComponent implements AfterViewInit {
     const select = {
       'MX': useGeodata,
       'US': usaAlbersLow,
-      'UK': ukraineLow,
-      'UE': continentsRussiaEuropeLow
+      'UE': am4geodata_worldLow,
+      'LA': am4geodata_worldLow,
     };
     return select[state];
   }
@@ -39,15 +39,19 @@ export class CountryComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.state = '';
     am4core.useTheme(am4themes_animated);
 
     const chart = am4core.create(this.chartElement.nativeElement, am4maps.MapChart);
     // Set map definition
-    chart.geodata = this.getCountry(this.country);
+    chart.geodata =  this.getCountry(this.country);
 
     // Set projection
-    chart.projection = new am4maps.projections.Albers();
+    if(this.country === 'LA' || 'UE') {
+      console.log('entra');
+      chart.projection = new am4maps.projections.Miller();
+    } else {
+      chart.projection = new am4maps.projections.Albers();
+    }
 
     // Create map polygon series
     const polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
@@ -71,8 +75,17 @@ export class CountryComponent implements AfterViewInit {
 
     // Create hover state and set alternative fill color
     const hs = polygonTemplate.states.create('hover');
-    hs.properties.fill = am4core.color('#bebebe');
+    hs.properties.fill = am4core.color('#8AC8D6');
 
+    if (this.country === 'LA') {
+      polygonSeries.include = ['MX', 'GT', 'SV', 'HN', 'NI', 'CR', 'PA', 'CO',
+        'VE', 'EC', 'PE', 'BR', 'BO', 'AR', 'PY', 'CL', 'UY', 'GY'
+      ];
+    } else if (this.country === 'UE') {
+      polygonSeries.include = [ 'DE', 'AT', 'BE', 'GB', 'CY', 'HR', 'DK', 'SK',
+        'SI', 'ES', 'EE', 'FI', 'FR'
+      ];
+    }
 
 
     // Create is active
